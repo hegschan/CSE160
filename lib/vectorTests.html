@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Vector3 tests (cuon-matrix-cse160)</title>
+  </head>
+  <body>
+    <pre id="out"></pre>
+    <script src="cuon-matrix-cse160.js"></script>
+    <script>
+      function approxEq(a, b, eps) {
+        eps = eps === undefined ? 1e-5 : eps;
+        return Math.abs(a - b) < eps;
+      }
+
+      function vecApproxEq(v, expected, eps) {
+        eps = eps === undefined ? 1e-5 : eps;
+        var e = v.elements;
+        for (var i = 0; i < 3; i++) {
+          if (!approxEq(e[i], expected[i], eps)) return false;
+        }
+        return true;
+      }
+
+      function line(msg) {
+        document.getElementById('out').textContent += msg + '\n';
+      }
+
+      var results = [];
+
+      // Test 1 set([4, 7, 8])
+      (function () {
+        var v = new Vector3([1, 1, 1]);
+        v.set(new Vector3([4, 7, 8]));
+        var ok = vecApproxEq(v, [4, 7, 8]);
+        results.push(ok);
+        line('Test 1 set([4, 7, 8]): ' + (ok ? 'Passed' : 'Failed'));
+      })();
+
+      // Test 2 add
+      (function () {
+        var v = new Vector3([1000, 432, -56.3]);
+        v.add(new Vector3([-999, 23, 0]));
+        var ok = vecApproxEq(v, [1, 455, -56.3]);
+        results.push(ok);
+        line('Test 2 [1000, 432, -56.3] + [-999, 23, 0]: ' + (ok ? 'Passed' : 'Failed'));
+      })();
+
+      // Test 3 sub
+      (function () {
+        var v = new Vector3([5677, -50, 28]);
+        v.sub(new Vector3([-1, -49, 27]));
+        var ok = vecApproxEq(v, [5678, -1, 1]);
+        results.push(ok);
+        line('Test 3 [5677, -50, 28] - [-1, -49, 27]: ' + (ok ? 'Passed' : 'Failed'));
+      })();
+
+      // Test 4 div
+      (function () {
+        var v = new Vector3([58.4, -45, 999999]);
+        v.div(-56.3);
+        var ok = vecApproxEq(
+          v,
+          [-1.0373001776198933, 0.7992895204262878, -17761.97158081705],
+          1e-3
+        );
+        results.push(ok);
+        line('Test 4 [58.4, -45, 999999] / -56.3: ' + (ok ? 'Passed' : 'Failed'));
+      })();
+
+      // Test 5 mul
+      (function () {
+        var v = new Vector3([-568, 214789, -251]);
+        v.mul(2.7);
+        var ok = vecApproxEq(v, [-1533.6, 579930.3, -677.7], 1e-4);
+        results.push(ok);
+        line('Test 5 [-568, 214789, -251] * 2.7: ' + (ok ? 'Passed' : 'Failed'));
+      })();
+
+      // Test 6 dot
+      (function () {
+        var a = new Vector3([2, 6.8, -23]);
+        var b = new Vector3([8, -2, -9]);
+        var d = Vector3.dot(a, b);
+        var ok = approxEq(d, 209.4, 1e-5);
+        results.push(ok);
+        line('Test 6 [2, 6.8, -23] dot [8, -2, -9]: ' + (ok ? 'Passed' : 'Failed'));
+      })();
+
+      // Test 7 cross
+      (function () {
+        var a = new Vector3([34, 6, 34.2222]);
+        var b = new Vector3([87, 34.8675, -234]);
+        var c = Vector3.cross(a, b);
+        var ok = vecApproxEq(c, [-2597.2425585, 10933.3314, 663.495], 1e-2);
+        results.push(ok);
+        line('Test 7 [34, 6, 34.2222] cross [87, 34.8675, -234]: ' + (ok ? 'Passed' : 'Failed'));
+      })();
+
+      // Test 8 magnitude
+      (function () {
+        var v = new Vector3([45.2, -23.7, 9923]);
+        var m = v.magnitude();
+        var ok = approxEq(m, 9923.131246234729, 1e-3);
+        results.push(ok);
+        line('Test 8 magnitude([45.2, -23.7, 9923]): ' + (ok ? 'Passed' : 'Failed'));
+      })();
+
+      // Test 9 normalize
+      (function () {
+        var v = new Vector3([-87, 22, 66.45623]);
+        v.normalize();
+        var ok = vecApproxEq(
+          v,
+          [-0.7791049130627498, 0.19701503548713212, 0.5951307505359552],
+          1e-5
+        );
+        results.push(ok);
+        line('Test 9 normalize([-87, 22, 66.45623]): ' + (ok ? 'Passed' : 'Failed'));
+      })();
+
+      var allPassed = results.every(function (x) { return x; });
+      line('');
+      line(allPassed ? 'All tests passed.' : 'Some tests failed.');
+    </script>
+  </body>
+</html>
